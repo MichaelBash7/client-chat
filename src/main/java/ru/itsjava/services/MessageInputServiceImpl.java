@@ -1,15 +1,17 @@
 package ru.itsjava.services;
 
 import lombok.SneakyThrows;
+import ru.itsjava.domain.User;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class MessageInputServiceImpl implements MessageInputService{
+public class MessageInputServiceImpl implements MessageInputService {
     private final BufferedReader bufferedReader;
 
-    public MessageInputServiceImpl(InputStream inputStream){
+
+    public MessageInputServiceImpl(InputStream inputStream) {
         bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
     }
 
@@ -18,4 +20,6 @@ public class MessageInputServiceImpl implements MessageInputService{
     public String getMessage() {
         return bufferedReader.readLine();
     }
+
 }
+
