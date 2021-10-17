@@ -22,7 +22,7 @@ public class SocketRunnable implements Runnable {
 
         while (true) {
             String input = serverReader.getMessage();
-            if (input.startsWith(user.getLogin())) {
+            if (!input.startsWith(user.getLogin())) {
                 System.out.println(input);
             }
         }

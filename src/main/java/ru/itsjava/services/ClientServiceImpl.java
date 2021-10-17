@@ -18,14 +18,11 @@ public class ClientServiceImpl implements ClientService {
     public void start() {
         Socket socket = new Socket(HOST, PORT);
         if (socket.isConnected()) {
-            new Thread(new SocketRunnable(socket, user)).start();
-
             PrintWriter serverWriter = new PrintWriter(socket.getOutputStream());
             MessageInputService messageInputService = new MessageInputServiceImpl(System.in);
 
                 System.out.println("Введите свой логин:");
                 String login = messageInputService.getMessage();
-
 
                 System.out.println("Введите свой пароль:");
                 String password = messageInputService.getMessage();
@@ -33,6 +30,9 @@ public class ClientServiceImpl implements ClientService {
 //            !autho!login:password
                 serverWriter.println("!autho!" + login + ":" + password);
                 serverWriter.flush();
+//            Новый поток мы запускаем после создания пользователя с паролем!!!
+                user = new User(login, password);
+                new Thread(new SocketRunnable(socket, user)).start();
 
 
                 while (true) {
