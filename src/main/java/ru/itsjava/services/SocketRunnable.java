@@ -3,7 +3,7 @@ package ru.itsjava.services;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import ru.itsjava.domain.User;
+
 
 import java.net.Socket;
 
@@ -12,7 +12,7 @@ import java.net.Socket;
 @AllArgsConstructor
 public class SocketRunnable implements Runnable {
     private final Socket socket;
-    public User user;
+
 
     @SneakyThrows
     @Override
@@ -21,10 +21,8 @@ public class SocketRunnable implements Runnable {
 
 
         while (true) {
-            String input = serverReader.getMessage();
-            if (!input.startsWith(user.getLogin())) {
-                System.out.println(input);
-            }
+                System.out.println(serverReader.getMessage());
+
         }
     }
 }

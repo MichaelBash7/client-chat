@@ -1,16 +1,17 @@
 package ru.itsjava.services;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import ru.itsjava.domain.User;
+
 
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class ClientServiceImpl implements ClientService {
     public final static int PORT = 8081;
     public final static String HOST = "localhost";
-    public User user;
-
 
 
     @SneakyThrows
@@ -18,9 +19,18 @@ public class ClientServiceImpl implements ClientService {
     public void start() {
         Socket socket = new Socket(HOST, PORT);
         if (socket.isConnected()) {
+            new Thread(new SocketRunnable(socket)).start();
+
             PrintWriter serverWriter = new PrintWriter(socket.getOutputStream());
             MessageInputService messageInputService = new MessageInputServiceImpl(System.in);
 
+            printMenu();
+            System.out.println("Введите номер меню");
+            int menuNum = Integer.parseInt(messageInputService.getMessage());
+
+            if (menuNum == 1) {
+                System.out.println("Вы выбрали авторизацию");
+//            Авторизация:
                 System.out.println("Введите свой логин:");
                 String login = messageInputService.getMessage();
 
@@ -30,10 +40,20 @@ public class ClientServiceImpl implements ClientService {
 //            !autho!login:password
                 serverWriter.println("!autho!" + login + ":" + password);
                 serverWriter.flush();
-//            Новый поток мы запускаем после создания пользователя с паролем!!!
-                user = new User(login, password);
-                new Thread(new SocketRunnable(socket, user)).start();
+            } else if (menuNum == 2) {
+                System.out.println("Вы выбрали регистрацию");
+//            Регистрация:
+                System.out.println("Придумайте свой логин:");
+                String regLogin = messageInputService.getMessage();
 
+                System.out.println("Придумайте свой пароль:");
+                String regPassword = messageInputService.getMessage();
+
+//            !reg!login:password
+                serverWriter.println("!reg!" + regLogin + ":" + regPassword);
+                serverWriter.flush();
+
+            }
 
                 while (true) {
                     String consoleMessage = messageInputService.getMessage();
@@ -48,4 +68,10 @@ public class ClientServiceImpl implements ClientService {
                 }
             }
         }
+
+
+    @Override
+    public void printMenu() {
+        System.out.println("1 - Авторизация; 2 - Регистрация");
     }
+}
