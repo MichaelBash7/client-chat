@@ -23,6 +23,8 @@ public class ClientServiceImpl implements ClientService {
 
             PrintWriter serverWriter = new PrintWriter(socket.getOutputStream());
             MessageInputService messageInputService = new MessageInputServiceImpl(System.in);
+            SecurityEncryptor securityEncryptor = new SecurityEncryptorImpl();
+
 
             printMenu();
             System.out.println("Введите номер меню");
@@ -36,9 +38,10 @@ public class ClientServiceImpl implements ClientService {
 
                 System.out.println("Введите свой пароль:");
                 String password = messageInputService.getMessage();
+                String encryptedPassword = securityEncryptor.md5Encrypt(password);
 
 //            !autho!login:password
-                serverWriter.println("!autho!" + login + ":" + password);
+                serverWriter.println("!autho!" + login + ":" + encryptedPassword);
                 serverWriter.flush();
             } else if (menuNum == 2) {
                 System.out.println("Вы выбрали регистрацию");
@@ -48,9 +51,10 @@ public class ClientServiceImpl implements ClientService {
 
                 System.out.println("Придумайте свой пароль:");
                 String regPassword = messageInputService.getMessage();
+                String encryptedPassword = securityEncryptor.md5Encrypt(regPassword);
 
 //            !reg!login:password
-                serverWriter.println("!reg!" + regLogin + ":" + regPassword);
+                serverWriter.println("!reg!" + regLogin + ":" + encryptedPassword);
                 serverWriter.flush();
 
             }
@@ -63,7 +67,6 @@ public class ClientServiceImpl implements ClientService {
 
                     if (consoleMessage.contentEquals("exit")) {
                         System.exit(0);
-
                     }
                 }
             }
